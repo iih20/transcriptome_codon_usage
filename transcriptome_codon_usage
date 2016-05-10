@@ -1,0 +1,154 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+my $file_description = "transcription_codon_usage.pl: determining codon usage from a transcriptome file.
+(Thank you Captain Obvious).
+Usage: perl transcription_codon_usage.pl transcriptome.fasta
+Sequences must not have spaces and new lines between sequences or contain any 5' UTRs. Always start with ATG.
+The program can take more than one input file but if so will be treated as one big file.\n";
+my $temp = undef;
+my %codon;
+my %percentage;
+my @stop_codon = {'TAG', 'TAA', 'TGA'};
+my $total = 0;
+
+if (@ARGV <1) {
+	print $file_description;
+	exit(0);
+}
+
+while (<>) {
+	chomp;
+	s/U/T/g;
+	if (m/(>)/) {
+		next;
+	}
+	while ( length($_)>=3 ) {
+		$temp = substr $_, 1, 3;
+		$_ = substr $_, 3;
+		#print  $temp . "\n";		
+		$codon{$temp}++;
+		if ($temp =~ @stop_codon) {
+			last;
+		}
+		$total++; 
+	}
+}
+
+foreach my $key (keys(%codon)) {
+ 	#print $key . "\t" . $codon{$key} . "\n";
+ 	$percentage{$key} = $codon{$key}/$total;
+ }
+
+ 
+my $printout = <<_EOH_;
+Phe:
+TTT	$codon{TTT}	$percentage{TTT}
+TTC	$codon{TTC}	$percentage{TTC}
+
+Leu:
+TTA	$codon{TTA}	$percentage{TTA}
+TTG	$codon{TTG}	$percentage{TTG}
+CTA	$codon{CTA}	$percentage{CTA}
+CTG	$codon{CTG}	$percentage{CTG}
+CTT	$codon{CTT}	$percentage{CTT}
+CTC	$codon{CTC}	$percentage{CTC}
+
+Ile:
+ATT	$codon{ATT}	$percentage{ATT}
+ATC	$codon{ATC}	$percentage{ATC}
+ATA	$codon{ATA}	$percentage{ATA}
+
+Met:
+ATG	$codon{ATG}	$percentage{ATG}
+
+Val:
+GTA	$codon{GTA}	$percentage{GTA}
+GTT	$codon{GTT}	$percentage{GTT}
+GTC	$codon{GTC}	$percentage{GTC}
+GTG	$codon{GTG}	$percentage{GTG}
+
+Ser:
+TCA	$codon{TCA}	$percentage{TCA}
+TCT	$codon{TCT}	$percentage{TCT}
+TCC	$codon{TCC}	$percentage{TCC}
+TCG	$codon{TCG}	$percentage{TCG}
+AGT	$codon{AGT}	$percentage{AGT}
+AGC	$codon{AGC}	$percentage{AGC}
+
+Pro:
+CCA	$codon{CCA}	$percentage{CCA}
+CCT	$codon{CCT}	$percentage{CCT}
+CCC	$codon{CCC}	$percentage{CCC}
+CCG	$codon{CCG}	$percentage{CCG}
+
+Thr:
+ACA	$codon{ACA}	$percentage{ACA}
+ACT	$codon{ACT}	$percentage{ACT}
+ACC	$codon{ACC}	$percentage{ACC}
+ACG	$codon{ACG}	$percentage{ACG}
+
+Ala:
+GCA	$codon{GCA}	$percentage{GCA}
+GCT	$codon{GCT}	$percentage{GCT}
+GCC	$codon{GCC}	$percentage{GCC}
+GCG	$codon{GCG}	$percentage{GCG}
+
+Tyr:
+TAT	$codon{TAT}	$percentage{TAT}
+TAC	$codon{TAC}	$percentage{TAC}
+
+His:
+CAT	$codon{CAT}	$percentage{CAT}
+CAC	$codon{CAC}	$percentage{CAC}
+
+Gln:
+CAA	$codon{CAA}	$percentage{CAA}
+CAG	$codon{CAG}	$percentage{CAG}
+
+Asn:
+AAT	$codon{AAT}	$percentage{AAT}
+AAC	$codon{AAC}	$percentage{AAC}
+
+Lys:
+AAA	$codon{AAA}	$percentage{AAA}
+AAG	$codon{AAG}	$percentage{AAG}
+
+Asp:
+GAT	$codon{GAT}	$percentage{GAT}
+GAC	$codon{GAC}	$percentage{GAC}
+
+Glu:
+GAA	$codon{GAA}	$percentage{GAA}
+GAG	$codon{GAG}	$percentage{GAG}
+
+Cys:
+TGT	$codon{TGT}	$percentage{TGT}
+TGC	$codon{TGC}	$percentage{TGC}
+
+Trp:
+TGG	$codon{TGG}	$percentage{TGG}
+
+Arg:
+CGT	$codon{CGT}	$percentage{CGT}
+CGA	$codon{CGA}	$percentage{CGA}
+CGG	$codon{CGG}	$percentage{CGG}
+CGC	$codon{CGC}	$percentage{CGC}
+AGA	$codon{AGA}	$percentage{AGA}
+AGG	$codon{AGG}	$percentage{AGG}
+
+Gly:
+GGT	$codon{GGT}	$percentage{GGT}
+GGA	$codon{GGA}	$percentage{GGA}
+GGG	$codon{GGG}	$percentage{GGG}
+GGC	$codon{GGC}	$percentage{GGC}
+
+Stop:
+TAA	$codon{TAA}	$percentage{TAA}
+TAG	$codon{TAG}	$percentage{TAG}
+TGA	$codon{TGA}	$percentage{TGA}
+
+_EOH_
+
+
+print $printout;
