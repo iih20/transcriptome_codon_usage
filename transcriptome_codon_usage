@@ -5,10 +5,8 @@ my $file_description = "transcription_codon_usage.pl: determining codon usage fr
 (Thank you Captain Obvious).
 Usage: perl transcription_codon_usage.pl transcriptome.fasta
 Sequences must not have spaces and new lines between sequences or contain any 5' UTRs. Always start with ATG.
-The program can take more than one input file but if so will be treated as one big file.
-----------------------------------------------------------------------------------------------------------------
-####Author: Ian Hu, Department of Biochemistry, University of Cambridge ####
-#### iih20@cam.ac.uk ####\n";
+The program can take more than one input file but if so will be treated as one big file.\n
+Author: Ian Hu, Dept. Biochemistry, Uni of Cambridge, iih20 at cam.ac.uk";
 my $temp = undef;
 my %codon;
 my %percentage;
@@ -33,6 +31,7 @@ while (<>) {
 				last;
 			}
 		$total++; 
+		}
 	}
 }
 
