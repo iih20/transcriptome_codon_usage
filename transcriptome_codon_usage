@@ -5,11 +5,14 @@ my $file_description = "transcription_codon_usage.pl: determining codon usage fr
 (Thank you Captain Obvious).
 Usage: perl transcription_codon_usage.pl transcriptome.fasta
 Sequences must not have spaces and new lines between sequences or contain any 5' UTRs. Always start with ATG.
-The program can take more than one input file but if so will be treated as one big file.\n";
+The program can take more than one input file but if so will be treated as one big file.
+----------------------------------------------------------------------------------------------------------------
+####Author: Ian Hu, Department of Biochemistry, University of Cambridge ####
+#### iih20@cam.ac.uk ####\n";
 my $temp = undef;
 my %codon;
 my %percentage;
-my @stop_codon = {'TAG', 'TAA', 'TGA'};
+my @stop_codon = ('TAG', 'TAA', 'TGA');
 my $total = 0;
 
 if (@ARGV <1) {
@@ -20,17 +23,15 @@ if (@ARGV <1) {
 while (<>) {
 	chomp;
 	s/U/T/g;
-	if (m/(>)/) {
-		next;
-	}
-	while ( length($_)>=3 ) {
-		$temp = substr $_, 1, 3;
-		$_ = substr $_, 3;
-		#print  $temp . "\n";		
-		$codon{$temp}++;
-		if ($temp =~ @stop_codon) {
-			last;
-		}
+	if (m/ATG/) {
+		while ( length($_)>=3 ) {
+			$temp = substr $_, 1, 3;
+			$_ = substr $_, 3;
+			#print  $temp . "\n";		
+			$codon{$temp}++;
+			if ($temp =~ @stop_codon) {
+				last;
+			}
 		$total++; 
 	}
 }
@@ -42,6 +43,7 @@ foreach my $key (keys(%codon)) {
 
  
 my $printout = <<_EOH_;
+
 Phe:
 TTT	$codon{TTT}	$percentage{TTT}
 TTC	$codon{TTC}	$percentage{TTC}
